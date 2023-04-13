@@ -86,81 +86,97 @@ var wantedOstJobstatsFields = []*mapping{
 		inProc:   "read",
 		field:    3,
 		reportAs: "jobstats_read_calls",
+		unit: "bytes",
 	},
 	{
 		inProc:   "read",
 		field:    7,
 		reportAs: "jobstats_read_min_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "read",
 		field:    9,
 		reportAs: "jobstats_read_max_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "read",
 		field:    11,
 		reportAs: "jobstats_read_bytes",
+		unit: "bytes",
 	},
 	{ // Different inProc for newer versions
 		inProc:   "read_bytes",
 		field:    3,
 		reportAs: "jobstats_read_calls",
+		unit: "bytes",
 	},
 	{
 		inProc:   "read_bytes",
 		field:    7,
 		reportAs: "jobstats_read_min_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "read_bytes",
 		field:    9,
 		reportAs: "jobstats_read_max_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "read_bytes",
 		field:    11,
 		reportAs: "jobstats_read_bytes",
+		unit: "bytes",
 	},
 	{ // We need to do the same for the write fields
 		inProc:   "write",
 		field:    3,
 		reportAs: "jobstats_write_calls",
+		unit: "bytes",
 	},
 	{
 		inProc:   "write",
 		field:    7,
 		reportAs: "jobstats_write_min_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "write",
 		field:    9,
 		reportAs: "jobstats_write_max_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "write",
 		field:    11,
 		reportAs: "jobstats_write_bytes",
+		unit: "bytes",
 	},
 	{ // Different inProc for newer versions
 		inProc:   "write_bytes",
 		field:    3,
 		reportAs: "jobstats_write_calls",
+		unit: "bytes",
 	},
 	{
 		inProc:   "write_bytes",
 		field:    7,
 		reportAs: "jobstats_write_min_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "write_bytes",
 		field:    9,
 		reportAs: "jobstats_write_max_size",
+		unit: "bytes",
 	},
 	{
 		inProc:   "write_bytes",
 		field:    11,
 		reportAs: "jobstats_write_bytes",
+		unit: "bytes",
 	},
 	{
 		inProc:   "getattr",
@@ -419,6 +435,13 @@ func (l *Lustre2) GetLustreProcStats(fileglob string, wantedFields []*mapping) e
 					var data uint64
 					if parts[0] == wanted.inProc {
 						wantedField := wanted.field
+						// In newer lustre version read and read_bytes line can be present
+						// but read referes to latency that particuar case. However
+						// read latency is usecs displayed rather than bytes
+						if wanted.unit != "" && wanted.unit != parts[6] {
+							continue
+						}
+						
 						// if not set, assume field[1]. Shouldn't be field[0], as
 						// that's a string
 						if wantedField == 0 {
