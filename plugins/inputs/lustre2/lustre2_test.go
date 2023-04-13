@@ -71,6 +71,23 @@ const obdfilterJobStatsContents = `job_stats:
   get_info:        { samples:           0, unit:  reqs }
   set_info:        { samples:           0, unit:  reqs }
   quotactl:        { samples:           0, unit:  reqs }
+- job_id:          testjob3
+  snapshot_time:   1681372306
+  read_bytes:      { samples:     1523680, unit: bytes, min:     4096, max:   524288, sum:     205693874176, sumsq:  41153530404274176 }
+  write_bytes:     { samples:     5602760, unit: bytes, min:       48, max:   524288, sum:    2935700676043, sumsq: 1538734750279526901 }
+  read:            { samples:     1525515, unit: usecs, min:        1, max:   447440, sum:        628435720, sumsq:     28075770829850 }
+  write:           { samples:     5607608, unit: usecs, min:        3, max:    20601, sum:        451436126, sumsq:        40139939376 }
+  getattr:         { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  setattr:         { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  punch:           { samples:       52491, unit: usecs, min:       11, max:   685124, sum:        367120431, sumsq:     12123013355015 }
+  sync:            { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  destroy:         { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  create:          { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  statfs:          { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  get_info:        { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  set_info:        { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  quotactl:        { samples:           0, unit: usecs, min:        0, max:        0, sum:                0, sumsq:                  0 }
+  prealloc:        { samples:           0, unit:  reqs }
 `
 
 const mdtProcContents = `snapshot_time             1438693238.20113 secs.usecs
@@ -112,6 +129,24 @@ const mdtJobStatsContents = `job_stats:
   samedir_rename:  { samples:         705, unit:  reqs }
   crossdir_rename: { samples:         200, unit:  reqs }
 - job_id:          testjob2
+  snapshot_time:   1461772761
+  open:            { samples:           6, unit:  reqs }
+  close:           { samples:           7, unit:  reqs }
+  mknod:           { samples:           8, unit:  reqs }
+  link:            { samples:           9, unit:  reqs }
+  unlink:          { samples:          20, unit:  reqs }
+  mkdir:           { samples:         200, unit:  reqs }
+  rmdir:           { samples:         210, unit:  reqs }
+  rename:          { samples:           8, unit:  reqs }
+  getattr:         { samples:          10, unit:  reqs }
+  setattr:         { samples:           2, unit:  reqs }
+  getxattr:        { samples:           4, unit:  reqs }
+  setxattr:        { samples:           5, unit:  reqs }
+  statfs:          { samples:        1207, unit:  reqs }
+  sync:            { samples:           3, unit:  reqs }
+  samedir_rename:  { samples:         706, unit:  reqs }
+  crossdir_rename: { samples:         201, unit:  reqs }
+- job_id:          testjob3
   snapshot_time:   1461772761
   open:            { samples:           6, unit:  reqs }
   close:           { samples:           7, unit:  reqs }
@@ -361,6 +396,43 @@ func TestLustre2GeneratesJobstatsMetrics(t *testing.T) {
 		"jobstats_ost_getattr":     uint64(0),
 		"jobstats_ost_setattr":     uint64(0),
 		"jobstats_punch":           uint64(1),
+		"jobstats_ost_sync":        uint64(0),
+		"jobstats_destroy":         uint64(0),
+		"jobstats_create":          uint64(0),
+		"jobstats_ost_statfs":      uint64(0),
+		"jobstats_get_info":        uint64(0),
+		"jobstats_set_info":        uint64(0),
+		"jobstats_quotactl":        uint64(0),
+		"jobstats_open":            uint64(6),
+		"jobstats_close":           uint64(7),
+		"jobstats_mknod":           uint64(8),
+		"jobstats_link":            uint64(9),
+		"jobstats_unlink":          uint64(20),
+		"jobstats_mkdir":           uint64(200),
+		"jobstats_rmdir":           uint64(210),
+		"jobstats_rename":          uint64(8),
+		"jobstats_getattr":         uint64(10),
+		"jobstats_setattr":         uint64(2),
+		"jobstats_getxattr":        uint64(4),
+		"jobstats_setxattr":        uint64(5),
+		"jobstats_statfs":          uint64(1207),
+		"jobstats_sync":            uint64(3),
+		"jobstats_samedir_rename":  uint64(706),
+		"jobstats_crossdir_rename": uint64(201),
+	})
+	
+	fields = append(fields, map[string]interface{}{
+		"jobstats_read_calls":      uint64(1523680),
+		"jobstats_read_min_size":   uint64(4096),
+		"jobstats_read_max_size":   uint64(524288),
+		"jobstats_read_bytes":      uint64(205693874176),
+		"jobstats_write_calls":     uint64(5602760),
+		"jobstats_write_min_size":  uint64(48),
+		"jobstats_write_max_size":  uint64(524288),
+		"jobstats_write_bytes":     uint64(2935700676043),
+		"jobstats_ost_getattr":     uint64(0),
+		"jobstats_ost_setattr":     uint64(0),
+		"jobstats_punch":           uint64(52491),
 		"jobstats_ost_sync":        uint64(0),
 		"jobstats_destroy":         uint64(0),
 		"jobstats_create":          uint64(0),
